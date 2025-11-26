@@ -2,5 +2,36 @@ spring:
   application:
     name: team
 
+  # 도커에 환경 변수를 등록
+  # 로컬 실행: 뒤의 값 사용
+  # 도커 실행: 앞의 값 사용
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: ${SPRING_DATASOURCE_URL:jdbc:oracle:thin:@localhost:1521/xe}
+    username: ${SPRING_DATASOURCE_USERNAME:springboot}
+    password: ${SPRING_DATASOURCE_PASSWORD:java1234}    
+    
+  # JPA 설정
+  jpa:
+    database: oracle
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true # 콘솔 로그에 SQL 출력
+    properties:
+      hibernate:
+        format-sql: true # SQL 포맷 이쁘게
+        highlight_sql: true # SQL 색깔 추가
+
+logging:
+  level:
+    org:
+      hibernate:
+        sql: debug
+        orm:
+          jdbc:
+            bind: trace
+
 server:
   port: 8080

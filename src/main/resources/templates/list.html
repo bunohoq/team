@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>CI/CD</title>
+	<link rel="stylesheet" href="http://bit.ly/3WJ5ilK" />
+</head>
+<body>
+	<!-- list.html -->
+	<h1>Spring Boot <small>CI/CD</small></h1>
+	
+	<table>
+		<tr>
+			<th>번호</th>
+			<th>이름</th>
+			<th>설명</th>
+		</tr>
+		<tr th:each="entity : ${list}">
+			<td th:each="${enity.seq}"></td>
+			<td th:each="${enity.name}"></td>
+			<td th:each="${enity.descriptiop}"></td>
+		</tr>
+	</table>
+	
+</body>
+</html>
