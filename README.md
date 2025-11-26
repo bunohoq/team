@@ -137,14 +137,16 @@ URL	설명
 ## 🔹 GET /api/example
 
 설명: 예제 API
+```
 응답 예시:
 
 {
   "message": "hello"
 }
-
+```
 ### 📌 요약
 기능	포함 여부
+```
 GitHub Actions CI	✅
 Docker 빌드 자동화	✅
 Docker Hub 업로드	✅
@@ -152,3 +154,4 @@ EC2 Pull & Run	✅
 단위 테스트 자동 실행	✅
 테스트 실패 자동 Issue 생성	✅
 README 문서 정리	✅
+``
