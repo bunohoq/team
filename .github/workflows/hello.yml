@@ -12,6 +12,6 @@ jobs:
     steps:
     - name: 깃헙 액션 테스트
       run: |
-        echo "push"가 발생하면 깃헙 액션(hello.yml)이 실행됩니다."
+        echo "push가 발생하면 깃헙 액션(hello.yml)이 실행됩니다."
         
     
