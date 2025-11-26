@@ -1,4 +1,4 @@
-##🚀 Spring Boot CI/CD Pipeline Projec
+# 🚀 Spring Boot CI/CD Pipeline Projec
 이 프로젝트는 GitHub Actions → Docker Hub → AWS EC2까지 이어지는 완전한
 CI/CD 자동화 파이프라인을 구성하는 예제입니다.
 
@@ -7,7 +7,7 @@ CI/CD 자동화 파이프라인을 구성하는 예제입니다.
 빌드 → 테스트 → Docker 이미지 생성 → Docker Hub 업로드 → EC2 배포
 까지 자동으로 이루어집니다.
 
-##📌 전체 구조
+## 📌 전체 구조
 ```
 로컬 개발
    ↓
@@ -24,7 +24,7 @@ AWS EC2 (CD)
  - 컨테이너 실행
 ```
 
-##📁 프로젝트 구조
+## 📁 프로젝트 구조
 ```
 src
  ├── main
@@ -35,7 +35,7 @@ src
       └── java/com.test.team.repository/TestRepositoryTests.java
 ```
 
-##🐳 Dockerfile
+## 🐳 Dockerfile
 
 프로젝트 루트/Dockerfile
 ```
@@ -45,7 +45,7 @@ COPY build/libs/*.jar app.jar
 ENTRYPOINT [ "java", "-jar", "/app/app.jar" ]
 ```
 
-##⚙️ GitHub Actions
+## ⚙️ GitHub Actions
 
 프로젝트 루트에 아래 디렉터리를 생성:
 ```
@@ -54,7 +54,7 @@ ENTRYPOINT [ "java", "-jar", "/app/app.jar" ]
         ├── hello.yml
         └── ci-cd.yml
 ```
-#✔ ci-cd.yml 주요 기능
+## ✔ ci-cd.yml 주요 기능
 
 main 브랜치 push → 자동 실행
 
@@ -72,7 +72,7 @@ Docker Hub 업로드
 
 테스트 실패 시 GitHub Issue 자동 생성
 
-##🐞 테스트 실패 자동 이슈 생성
+## 🐞 테스트 실패 자동 이슈 생성
 
 .github/TEST_FAILURE_TEMPLATE.md
 ```
@@ -107,7 +107,7 @@ GitHub Actions 설정:
     assignees: ${{ github.actor }}
 ```
 
-##🚚 AWS EC2 배포
+## 🚚 AWS EC2 배포
 
 EC2에서 최신 이미지 pull + 실행:
 ```
@@ -115,7 +115,7 @@ docker pull bunohoq/team
 docker rm -f team
 docker run -d --name team -p 8080:8080 bunohoq/team
 ```
-##▶️ 로컬 실행 방법
+## ▶️ 로컬 실행 방법
 ./gradlew clean build
 java -jar build/libs/app.jar
 
@@ -126,7 +126,7 @@ docker build -t team .
 docker run -p 8080:8080 team
 ```
 
-###🌐 기본 라우팅
+## 🌐 기본 라우팅
 URL	설명
 /	index.html 렌더링
 /index	동일
@@ -134,7 +134,7 @@ URL	설명
 
 향후 API가 추가되면 아래 형식으로 문서를 정리하세요.
 
-###🔹 GET /api/example
+## 🔹 GET /api/example
 
 설명: 예제 API
 응답 예시:
@@ -143,7 +143,7 @@ URL	설명
   "message": "hello"
 }
 
-###📌 요약
+### 📌 요약
 기능	포함 여부
 GitHub Actions CI	✅
 Docker 빌드 자동화	✅
