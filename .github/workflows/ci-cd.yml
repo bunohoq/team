@@ -73,54 +73,56 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. build 작업이 업로드한 파일들을 다운로드합니다.
-      - name: 산출물 다운로드
-        uses: actions/download-artifact@v4
-        with:
-          name: deploy-files
-          path: .  # <--- [수정됨] 현재 폴더(.)에 바로 다운로드
+    # build 작업이 업로드한 파일들을 다운로드
+    - name: 산출물 다운로드
+      uses: actions/download-artifact@v4
+      with:
+        name: deploy-files
+        path: .  # 현재 폴더(.)에 바로 다운로드
 
-      # 2. scp로 복사하기 전에 EC2에 디렉터리를 미리 생성합니다.
-      - name: EC2에 배포 디렉터리 생성
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            mkdir -p /home/ubuntu/my-project
-                
-      # 3. 이제 scp가 현재 폴더에 있는 파일들을 올바르게 찾아 EC2로 복사합니다.
-      - name: docker-compose.yml 및 script.sql 파일 EC2에 복사
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          # [수정됨] 콤마로 구분된 한 줄로 변경
-          source: "docker-compose.yml, script.sql"
-          target: "/home/ubuntu/my-project"
+    # 2. scp로 복사하기 전에 EC2에 디렉터리를 미리 생성
+    - name: EC2에 배포 디렉터리 생성
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          mkdir -p /home/ubuntu/my-project
+              
+    # 3. scp가 현재 폴더에 있는 파일들을 올바르게 찾아 EC2로 복사
+    - name: docker-compose.yml 및 script.sql 파일 EC2에 복사
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "docker-compose.yml, script.sql"
+        target: "/home/ubuntu/my-project"
 
-      # 4. EC2에 SSH로 접속하여 배포 스크립트를 실행합니다.
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # 1. 이제 이 디렉터리와 파일들이 존재함
-            cd /home/ubuntu/my-project
-            echo DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} > .env
-            
-            # 2. Build 단계에서 푸시한 최신 이미지를 PULL 받습니다.
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/team:latest
-            
-            # 3. docker-compose.yml을 기반으로 기존 컨테이너와 *볼륨*을 삭제합니다.
-            sudo docker compose down -v
-            
-            # 4. 새 컨테이너를 시작합니다. (oracle이 script.sql을 실행)
-            sudo docker compose up -d
-            
-            # 5. 사용하지 않는 Docker 이미지를 정리합니다.
-            sudo docker image prune -f
+    # 4. EC2에 SSH로 접속하여 배포 스크립트를 실행
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # 1. 이 디렉터리와 파일들이 존재함
+          cd /home/ubuntu/my-project
+          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
+          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          
+          # 2. Build 단계에서 푸시한 최신 이미지를 PULL 받는다.
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/team:latest
+          
+          # 3. docker-compose.yml을 기반으로 기존 컨테이너와 볼륨을 삭제한다.
+          sudo docker compose down -v
+          
+          # 4. 새 컨테이너를 시작합니다. (oracle이 script.sql을 실행)
+          sudo docker compose up -d
+          
+          # 5. 사용하지 않는 Docker 이미지를 정리
+          sudo docker image prune -f
